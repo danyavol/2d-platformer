@@ -1,3 +1,3 @@
-let t = new Platformer2D.default(GAME_CONFIG);
+const canvas = document.getElementById('game-canvas');
 
-t.info();
+const platformer = new Platformer2D.default(canvas, GAME_CONFIG);

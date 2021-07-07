@@ -1,5 +1,8 @@
 const GAME_CONFIG = {
-    mama: "Cash",
-    age: 1,
-    married: true
+    canvasWidth: 600,
+    canvasHeight: 400,
+    game: {
+        mapWidth: 2000,
+        mapHeight: 1000
+    }
 }

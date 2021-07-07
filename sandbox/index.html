@@ -5,12 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2D Platformer</title>
+    <style type="text/css">
+        canvas {
+            border: 1px solid black; 
+        }
+    </style>
 </head>
 <body>
-    <canvas id="game-canvas"></canvas>
+    <canvas id="game-canvas">
+        Your browser doesn't support canvas.
+    </canvas>
 
-    <script src="./platformer-2d.js"></script>
-    <script src="./game-config.js"></script>
-    <script src="./script.js"></script>
+    <script src="dist/platformer-2d.js"></script>
+    <script src="game-config.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
