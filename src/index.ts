@@ -1,12 +1,6 @@
-export default class Platformer {
+import Platformer2D from "./test";
 
-    private name: string;
+const t = new Platformer2D('Library test console log');
+t.info();
 
-    constructor(string: string) {
-        this.name = string;
-    }
-
-    public info(): void {
-        console.log(this.name);
-    }
-}
+export default Platformer2D;

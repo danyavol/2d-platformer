@@ -2,15 +2,17 @@
 const path = require('path');
 
 module.exports = {
-    devtool: 'inline-source-map',
+    devtool: 'source-map',
     mode: 'development',
-	entry: './src/index.ts',
+	entry: path.resolve(__dirname, './src/index.ts'),
 	output: {
-		filename: 'platformer.js',
+		filename: 'platformer-2d.js',
 		path: path.resolve(__dirname, 'dist'),
-        library: 'Platformer',
-        libraryTarget: 'umd'
-	},
+        library: {
+            name: 'Platformer2D',
+            type: 'umd'
+        }
+    },
     module: {
         rules: [
             {
