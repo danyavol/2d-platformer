@@ -1,8 +1,7 @@
 // icons https://www.studio-maximus.com/works/apps/birds-to-space/
 
 import { PlatformerConfig } from "../interfaces/platformer-config.interface";
-import { ImageList } from "./image-loader/image-list";
-import { ImageService } from "./image-loader/image.service";
+import { ImageService } from "./image.service";
 
 export type RectangleCoords = [number, number, number, number];
 
@@ -34,14 +33,11 @@ export default class CanvasService {
 
     public clearCanvas(): void {
         this.canvas.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-
-        
     }
 
     public drawBear(): void {
         const img = ImageService.bear();
-        this.canvas.drawImage(img, 10, 10, 70, 90);
-        
+        this.canvas.drawImage(img, 0, 0);
     }
 
 }

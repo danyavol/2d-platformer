@@ -12,7 +12,6 @@ export default class Platformer2D {
     }
 
     private init(): void {
-        // this.canvasService.drawRectangle([10, 10, 50, 80]);
         this.canvasService.drawBear();
     }
 };
