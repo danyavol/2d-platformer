@@ -1,9 +1,6 @@
 // icons https://www.studio-maximus.com/works/apps/birds-to-space/
 
 import { PlatformerConfig } from "../interfaces/platformer-config.interface";
-import { ImageService } from "./image.service";
-
-export type RectangleCoords = [number, number, number, number];
 
 export default class CanvasService {
 
@@ -12,7 +9,10 @@ export default class CanvasService {
     private canvasWidth: number;
     private canvasHeight: number;
 
-    constructor(canvasElement: HTMLCanvasElement, config: PlatformerConfig) {
+    constructor(
+        canvasElement: HTMLCanvasElement, 
+        config: PlatformerConfig
+    ) {
         this.element = canvasElement;
         this.canvas = canvasElement.getContext('2d');
         this.canvasHeight = config.canvasHeight;
@@ -26,17 +26,11 @@ export default class CanvasService {
         this.element.height = this.canvasHeight;
     }
 
-    public drawRectangle(coords: RectangleCoords): void {
-        this.canvas.fillStyle = "rgb(200,0,0)";
-        this.canvas.fillRect(...coords);
-    }
-
     public clearCanvas(): void {
         this.canvas.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
     }
 
-    public drawBear(): void {
-        const img = ImageService.bear();
+    public drawImage(img: HTMLImageElement): void {
         this.canvas.drawImage(img, 0, 0);
     }
 
