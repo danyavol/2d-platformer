@@ -37,12 +37,12 @@ export class ObjectService {
             }
         }
 
-        this.afterInit();
+        this.renderObjects();
     }
 
-    public afterInit(): void {
-        this.staticObjects.forEach(o => o.drawObject());
-        this.dynamicObjects.forEach(o => o.drawObject());
+    public renderObjects(): void {
+        this.staticObjects.forEach(o => o.render());
+        this.dynamicObjects.forEach(o => o.render());
     }
 
     private clearObjects(): void {

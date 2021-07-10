@@ -36,4 +36,10 @@ export default class CanvasService {
         this.canvas.drawImage(img, ...coords);
     }
 
+    public moveCamera(x: number, y: number): void {
+        console.log(123);
+        
+        this.canvas.translate(x, y);
+    }
+
 }

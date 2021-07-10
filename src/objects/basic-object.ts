@@ -2,7 +2,7 @@ import { ExtendedObject, InputObject } from "../interfaces/object.interface";
 import CanvasService, { RectangleCoords } from "../services/canvas.service";
 import { ImageService } from "../services/image.service";
 
-export class BasicObject {
+export abstract class BasicObject {
 
     protected object: Partial<ExtendedObject>;
 
@@ -23,4 +23,8 @@ export class BasicObject {
         ];
         this.canvasService.drawImage(this.object.model, modelCoords);
     }
+
+    public render(): void {
+        this.drawObject();
+    };
 }
