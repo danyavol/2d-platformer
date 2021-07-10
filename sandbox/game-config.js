@@ -1,8 +1,26 @@
 const GAME_CONFIG = {
-    canvasWidth: 600,
-    canvasHeight: 400,
+    canvasWidth: 900,
+    canvasHeight: 600,
     game: {
         mapWidth: 2000,
         mapHeight: 1000
-    }
+    },
+    objects: [
+        {
+            type: 'player',
+            modelName: 'bear',
+            modelSize: [140, 170],
+            hitboxStart: [0, 10],
+            hitboxSize: [140, 160],
+            coords: [50, 50]
+        },
+        {
+            type: 'wall',
+            modelName: 'grass',
+            modelSize: [350, 120],
+            hitboxStart: [0, 0],
+            hitboxSize: [350, 120],
+            coords: [0, 220]
+        },
+    ]
 }

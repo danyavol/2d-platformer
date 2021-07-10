@@ -2,6 +2,8 @@
 
 import { PlatformerConfig } from "../interfaces/platformer-config.interface";
 
+export type RectangleCoords = [number, number, number, number];
+
 export default class CanvasService {
 
     private element: HTMLCanvasElement;
@@ -30,8 +32,8 @@ export default class CanvasService {
         this.canvas.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
     }
 
-    public drawImage(img: HTMLImageElement): void {
-        this.canvas.drawImage(img, 0, 0);
+    public drawImage(img: HTMLImageElement, coords: RectangleCoords): void {
+        this.canvas.drawImage(img, ...coords);
     }
 
 }

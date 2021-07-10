@@ -1,12 +1,19 @@
 import { BehaviorSubject } from "rxjs";
 
+// 1) Import image
 import bear from '../assets/images/bear.svg';
+import grass from '../assets/images/grass.jpg';
+
+
+// 2) Add image name to ObjectModels type
+export type ObjectModels = 'bear' | 'grass';
 
 export class ImageService {
 
-    public files = {
+    // 3) Load image to files object
+    public files: {[K in ObjectModels]: HTMLImageElement} = {
         bear: this.load(bear),
-        // ...
+        grass: this.load(grass),
     };
     
     private filesCount = Object.keys(this.files).length;
