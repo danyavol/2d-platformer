@@ -15,4 +15,8 @@ export class Wall extends BasicObject {
         this.object.hasCollision = true;
         this.object.layer = 1;        
     }
+
+    public render(): void {
+        super.render();
+    }
 }

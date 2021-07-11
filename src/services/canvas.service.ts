@@ -43,6 +43,11 @@ export default class CanvasService {
         this.canvas.setTransform(1, 0, 0, 1, 0, 0);
     }
 
+    public drawFPS(fps: number): void {
+        this.canvas.font = '14px sans-serif';
+        this.canvas.fillText('FPS: ' + fps, 0, 14);
+    }
+
     public moveCamera(x: number, y: number): void {
         console.log(123);
         

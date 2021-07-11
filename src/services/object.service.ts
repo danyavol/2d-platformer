@@ -9,7 +9,6 @@ export type ObjectTypes = 'wall' | 'player';
 export class ObjectService {
 
     private staticObjects: Wall[] = [];
-
     private dynamicObjects: Player[] = [];
 
     constructor(
@@ -36,13 +35,11 @@ export class ObjectService {
                     break;
             }
         }
-
-        this.renderObjects();
     }
 
-    public renderObjects(): void {
+    public renderObjects(fps: number): void {
         this.staticObjects.forEach(o => o.render());
-        this.dynamicObjects.forEach(o => o.render());
+        this.dynamicObjects.forEach(o => o.renderEntity(fps));
     }
 
     private clearObjects(): void {

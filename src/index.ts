@@ -2,14 +2,14 @@ import { PlatformerConfig } from "./interfaces/platformer-config.interface";
 import CanvasService from "./services/canvas.service";
 import { ImageService } from "./services/image.service";
 import { ObjectService } from "./services/object.service";
-import { ProcessService } from "./services/process.service";
+import { GameLoopService } from "./services/game-loop.service";
 
 export default class Platformer2D {
 
     private canvasService: CanvasService;
     private imageService: ImageService;
     private objectService: ObjectService;
-    private processService: ProcessService;
+    private gameLoopService: GameLoopService;
 
     constructor(canvas: HTMLCanvasElement, private config: PlatformerConfig) {
         this.imageService = new ImageService();
@@ -18,7 +18,7 @@ export default class Platformer2D {
             this.imageService, 
             this.canvasService
         );
-        this.processService = new ProcessService(
+        this.gameLoopService = new GameLoopService(
             this.canvasService, 
             this.objectService
         );
@@ -37,6 +37,6 @@ export default class Platformer2D {
     }
 
     private afterInit(): void {
-        this.processService.start();
+        this.gameLoopService.start();
     }
 };

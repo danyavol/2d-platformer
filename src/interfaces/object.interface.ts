@@ -14,7 +14,6 @@ export interface ExtendedObject extends InputObject {
     model: HTMLImageElement;
     hasCollision: boolean;
     layer: number;
-    jumpHeight: number;
     isModelFlipped: boolean;
 }
 

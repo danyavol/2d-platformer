@@ -19,7 +19,11 @@ export abstract class BasicObject {
         };
     }
 
-    public drawObject() {
+    protected render(): void {
+        this.drawObject();
+    };
+
+    private drawObject() {
         const modelCoords: RectangleCoords = [ 
             ...this.config.coords, ...this.config.modelSize 
         ];
@@ -28,8 +32,5 @@ export abstract class BasicObject {
         else
             this.canvasService.drawImage(this.object.model, modelCoords);
     }
-
-    public render(): void {
-        this.drawObject();
-    };
+    
 }

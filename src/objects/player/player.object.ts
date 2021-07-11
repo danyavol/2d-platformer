@@ -18,13 +18,14 @@ export class Player extends EntityObject {
         
         this.object.hasCollision = true;
         this.object.layer = 2;
-        this.setMaxSpeed(12);
-        this.object.jumpHeight = 40;
+        this.setMaxSpeed(350);
         
         this.initEventListeners();
     }
 
-    public render(): void {
+    public renderEntity(fps: number): void {
+        this.fps = fps;
+
         switch (this.pressedDirection) {
             case 'left':
                 this.moveLeft(); break;
@@ -33,10 +34,11 @@ export class Player extends EntityObject {
             default:
                 this.stop();
         }
-        
+
         super.render();
     }
 
+    // TODO: Fix events (press left, press right, release right => person should go to the left)
     private initEventListeners(): void {
         document.addEventListener('keydown', e => {
             switch (e.key) {
