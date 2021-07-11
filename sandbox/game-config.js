@@ -9,9 +9,9 @@ const GAME_CONFIG = {
         {
             type: 'player',
             modelName: 'bear',
-            modelSize: [140, 170],
+            modelSize: [70, 85],
             hitboxStart: [0, 10],
-            hitboxSize: [140, 160],
+            hitboxSize: [70, 75],
             coords: [50, 50]
         },
         {
@@ -20,7 +20,7 @@ const GAME_CONFIG = {
             modelSize: [350, 120],
             hitboxStart: [0, 0],
             hitboxSize: [350, 120],
-            coords: [0, 220]
+            coords: [0, 135]
         },
     ]
 }

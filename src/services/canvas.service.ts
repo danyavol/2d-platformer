@@ -2,7 +2,7 @@
 
 import { PlatformerConfig } from "../interfaces/platformer-config.interface";
 
-export type RectangleCoords = [number, number, number, number];
+export type RectangleCoords = [number, number, number, number]; // x, y, width, height
 
 export default class CanvasService {
 
@@ -34,6 +34,13 @@ export default class CanvasService {
 
     public drawImage(img: HTMLImageElement, coords: RectangleCoords): void {
         this.canvas.drawImage(img, ...coords);
+    }
+
+    public drawFlippedImage(img: HTMLImageElement, coords: RectangleCoords): void {
+        this.canvas.translate(coords[0] + coords[2], coords[1]);
+        this.canvas.scale(-1, 1);
+        this.canvas.drawImage(img, 0, 0, coords[2], coords[3]);
+        this.canvas.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     public moveCamera(x: number, y: number): void {

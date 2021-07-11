@@ -11,9 +11,11 @@ export abstract class BasicObject {
         private imageService: ImageService,
         private canvasService: CanvasService
     ) {
+        
         this.object = {
             ...config,
             model: this.imageService.files[config.modelName],
+            isModelFlipped: false
         };
     }
 
@@ -21,7 +23,10 @@ export abstract class BasicObject {
         const modelCoords: RectangleCoords = [ 
             ...this.config.coords, ...this.config.modelSize 
         ];
-        this.canvasService.drawImage(this.object.model, modelCoords);
+        if (this.object.isModelFlipped)
+            this.canvasService.drawFlippedImage(this.object.model, modelCoords)
+        else
+            this.canvasService.drawImage(this.object.model, modelCoords);
     }
 
     public render(): void {

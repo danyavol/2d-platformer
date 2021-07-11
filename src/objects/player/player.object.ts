@@ -14,10 +14,11 @@ export class Player extends EntityObject {
         canvasService: CanvasService
     ) {
         super(config, imageService, canvasService);
-
+        
+        
         this.object.hasCollision = true;
         this.object.layer = 2;
-        this.object.speed = 10;
+        this.setMaxSpeed(12);
         this.object.jumpHeight = 40;
         
         this.initEventListeners();
