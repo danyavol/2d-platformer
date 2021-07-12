@@ -12,7 +12,7 @@ const GAME_CONFIG = {
             modelSize: [70, 85],
             hitboxStart: [0, 10],
             hitboxSize: [70, 75],
-            coords: [50, 50]
+            coords: [50, 250]
         },
         {
             type: 'wall',
@@ -20,7 +20,7 @@ const GAME_CONFIG = {
             modelSize: [350, 120],
             hitboxStart: [0, 0],
             hitboxSize: [350, 120],
-            coords: [0, 135]
+            coords: [0, 335]
         },
     ]
 }

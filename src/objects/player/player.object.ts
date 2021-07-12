@@ -6,6 +6,8 @@ import { EntityObject } from "../entity-object";
 export class Player extends EntityObject {
 
     private pressedDirection: 'left' | 'right' = null;
+    private isLeftPressed = false;
+    private isRightPressed = false;
     private isJumpPressed = false;
 
     constructor(
@@ -15,7 +17,6 @@ export class Player extends EntityObject {
     ) {
         super(config, imageService, canvasService);
         
-        
         this.object.hasCollision = true;
         this.object.layer = 2;
         this.setMaxSpeed(350);
@@ -24,28 +25,25 @@ export class Player extends EntityObject {
     }
 
     public renderEntity(fps: number): void {
-        this.fps = fps;
-
         switch (this.pressedDirection) {
             case 'left':
-                this.moveLeft(); break;
+                super.moveLeft(); break;
             case 'right':
-                this.moveRight(); break;
-            default:
-                this.stop();
+                super.moveRight(); break;
         }
 
-        super.render();
+        if (this.isJumpPressed) super.jump();
+
+        super.renderEntity(fps);
     }
 
-    // TODO: Fix events (press left, press right, release right => person should go to the left)
     private initEventListeners(): void {
         document.addEventListener('keydown', e => {
             switch (e.key) {
                 case 'ArrowRight':
-                    this.pressedDirection = 'right'; break;
+                    this.isRightPressed = true; this.updateDirection(); break;
                 case 'ArrowLeft':
-                    this.pressedDirection = 'left'; break;
+                    this.isLeftPressed = true; this.updateDirection(); break;
                 case 'ArrowUp':
                     this.isJumpPressed = true; break;
             }            
@@ -53,17 +51,23 @@ export class Player extends EntityObject {
         document.addEventListener('keyup', e => {
             switch (e.key) {
                 case 'ArrowRight':
-                    this.pressedDirection === 'right' ? 
-                        this.pressedDirection = null : null; 
-                    break;
+                    this.isRightPressed = false; this.updateDirection(); break;
                 case 'ArrowLeft':
-                    this.pressedDirection === 'left' ? 
-                        this.pressedDirection = null : null; 
-                    break;
+                    this.isLeftPressed = false; this.updateDirection(); break;
                 case 'ArrowUp':
                     this.isJumpPressed = false; break;
             }
         });
+    }
+
+    private updateDirection(): void {
+        if ( this.isLeftPressed && !this.isRightPressed ) {
+            this.pressedDirection = 'left';
+        } else if ( !this.isLeftPressed && this.isRightPressed ) {
+            this.pressedDirection = 'right';
+        } else if ( !this.isLeftPressed && !this.isRightPressed ) {
+            this.pressedDirection = null;
+        }
     }
 
 }
