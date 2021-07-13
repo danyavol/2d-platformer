@@ -1,5 +1,3 @@
-import { BehaviorSubject } from "rxjs";
-
 // 1) Import image
 import bear from '../assets/images/bear.svg';
 import grass from '../assets/images/grass.jpg';
@@ -19,8 +17,8 @@ export class ImageService {
     private filesCount = Object.keys(this.files).length;
     private loadedFilesCount = 0;
 
-    private isLoadedSbj = new BehaviorSubject<boolean>(false);
-    public readonly isLoaded$ = this.isLoadedSbj.asObservable();
+    private finishLoading: Function;
+    public isLoaded = new Promise(res => this.finishLoading = res);
 
     private load(file: any): HTMLImageElement {
         const img = new Image();
@@ -31,6 +29,6 @@ export class ImageService {
 
     private fileLoaded(): void {
         if (++this.loadedFilesCount >= this.filesCount)
-            this.isLoadedSbj.next(true);    
+            this.finishLoading();   
     }
 }

@@ -24,20 +24,11 @@ export default class Platformer2D {
             this.objectService
         );
 
-        this.init();
+        this.imageService.isLoaded.then(() => this.init());
     }
 
     private init(): void {
-        const sub = this.imageService.isLoaded$.subscribe(isLoaded => {
-            if (isLoaded) {
-                sub.unsubscribe();
-                this.objectService.init(this.config.objects);
-                this.afterInit();
-            }
-        });
-    }
-
-    private afterInit(): void {
+        this.objectService.init(this.config.objects);
         this.gameLoopService.start();
     }
 };

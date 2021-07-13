@@ -43,7 +43,6 @@ export class GridService {
         const relatedCells = this.getRelatedCells(object.coords, object.modelSize);
         relatedCells.forEach( index => this.grid[index].push(object) );
         object.relatedCells = relatedCells;
-        console.log(this.grid['0x2'].length);
     }
     
     private resetGrid(): void {
