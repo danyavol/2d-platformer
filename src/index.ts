@@ -16,7 +16,8 @@ export default class Platformer2D {
         this.canvasService = new CanvasService(canvas, config);
         this.objectService = new ObjectService(
             this.imageService, 
-            this.canvasService
+            this.canvasService,
+            config
         );
         this.gameLoopService = new GameLoopService(
             this.canvasService, 

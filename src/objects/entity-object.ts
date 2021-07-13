@@ -1,3 +1,4 @@
+import { abs } from "../helpers/common-methods";
 import { InputObject } from "../interfaces/object.interface";
 import CanvasService from "../services/canvas.service";
 import { ImageService } from "../services/image.service";
@@ -34,6 +35,7 @@ export abstract class EntityObject extends BasicObject {
         super(config, imageService, canvasService);
     }
 
+    // TODO: Don't let player to go out of bounds
     public moveRight(): void {
         this.sideButtonPressed = true;
         this.object.isModelFlipped = true;
@@ -111,7 +113,7 @@ export abstract class EntityObject extends BasicObject {
     }
 
     private speedUp(currSpeed: number): number {
-        const speed = this.abs(currSpeed);
+        const speed = abs(currSpeed);
         const newSpeed = speed + this.maxSpeed / (this.fps * this.sideAcceleration);
 
         if (newSpeed > this.maxSpeed) return this.maxSpeed;
@@ -119,16 +121,16 @@ export abstract class EntityObject extends BasicObject {
     }
 
     private slowDown(currSpeed: number): number {
-        const speed = this.abs(currSpeed);
+        const speed = abs(currSpeed);
         const newSpeed = speed - this.maxSpeed / (this.fps * this.sideAcceleration);
 
         if (newSpeed < 0) return 0;
         else return newSpeed;
     }
 
-    private abs(num: number): number {
-        if (num < 0) return -num;
-        return num;
-    }
+    // private abs(num: number): number {
+    //     if (num < 0) return -num;
+    //     return num;
+    // }
     
 }

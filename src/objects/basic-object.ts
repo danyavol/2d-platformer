@@ -7,16 +7,33 @@ export abstract class BasicObject {
     protected object: Partial<ExtendedObject>;
 
     constructor(
-        private config: InputObject,
-        private imageService: ImageService,
+        config: InputObject,
+        imageService: ImageService,
         private canvasService: CanvasService
     ) {
         
         this.object = {
             ...config,
-            model: this.imageService.files[config.modelName],
-            isModelFlipped: false
+            model: imageService.files[config.modelName],
+            isModelFlipped: false,
+            relatedCells: []
         };
+    }
+
+    get coords() {
+        return this.object.coords;
+    }
+
+    get modelSize() {
+        return this.object.modelSize;
+    }
+
+    get relatedCells() {
+        return this.object.relatedCells;
+    }
+
+    set relatedCells(value: string[]) {
+        this.object.relatedCells = value;
     }
 
     protected render(): void {
@@ -25,7 +42,7 @@ export abstract class BasicObject {
 
     private drawObject() {
         const modelCoords: RectangleCoords = [ 
-            ...this.config.coords, ...this.config.modelSize 
+            ...this.object.coords, ...this.object.modelSize 
         ];
         if (this.object.isModelFlipped)
             this.canvasService.drawFlippedImage(this.object.model, modelCoords)

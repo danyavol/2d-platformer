@@ -15,5 +15,6 @@ export interface ExtendedObject extends InputObject {
     hasCollision: boolean;
     layer: number;
     isModelFlipped: boolean;
+    relatedCells: string[];
 }
 
