@@ -1,4 +1,4 @@
-import { InputObject } from "../../interfaces/object.interface";
+import { ObjectConfig } from "../../interfaces/platformer-config.interface";
 import CanvasService from "../../services/canvas.service";
 import { ImageService } from "../../services/image.service";
 import { BasicObject } from "../basic-object";
@@ -6,17 +6,13 @@ import { BasicObject } from "../basic-object";
 export class Wall extends BasicObject {
 
     constructor(
-        config: InputObject, 
+        config: ObjectConfig, 
         imageService: ImageService, 
         canvasService: CanvasService
     ) {
         super(config, imageService, canvasService);
 
-        this.object.hasCollision = true;
-        this.object.layer = 1;        
+        this.hasCollision = true;       
     }
 
-    public render(): void {
-        super.render();
-    }
 }

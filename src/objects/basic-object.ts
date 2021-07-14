@@ -1,53 +1,49 @@
-import { ExtendedObject, InputObject } from "../interfaces/object.interface";
+
+import { ObjectConfig } from "../interfaces/platformer-config.interface";
 import CanvasService, { RectangleCoords } from "../services/canvas.service";
-import { ImageService } from "../services/image.service";
+import { ImageService, ObjectModels } from "../services/image.service";
 
 export abstract class BasicObject {
 
-    protected object: Partial<ExtendedObject>;
+    public coords: [number, number];
+    public readonly size: [number, number];
+    public readonly model: {
+        name: ObjectModels,
+        image: HTMLImageElement,
+        offset: [number, number],
+        size: [number, number],
+    };
+    public hasCollision: boolean;
+    public isModelFlipped: boolean = false;
+    public relatedCells: string[] = [];
+
 
     constructor(
-        config: InputObject,
+        config: ObjectConfig,
         imageService: ImageService,
         private canvasService: CanvasService
     ) {
-        
-        this.object = {
-            ...config,
-            model: imageService.files[config.modelName],
-            isModelFlipped: false,
-            relatedCells: []
+        this.coords = config.coords;
+        this.size = config.size;
+        this.model = {
+            name: config.modelName,
+            image: imageService.files[config.modelName],
+            offset: config.modelOffset,
+            size: config.modelSize
         };
     }
 
-    get coords() {
-        return this.object.coords;
-    }
-
-    get modelSize() {
-        return this.object.modelSize;
-    }
-
-    get relatedCells() {
-        return this.object.relatedCells;
-    }
-
-    set relatedCells(value: string[]) {
-        this.object.relatedCells = value;
-    }
-
-    protected render(): void {
-        this.drawObject();
-    };
-
-    private drawObject() {
+    public drawObject() {
         const modelCoords: RectangleCoords = [ 
-            ...this.object.coords, ...this.object.modelSize 
+            this.coords[0] + this.model.offset[0],
+            this.coords[1] + this.model.offset[1],
+            ...this.model.size
         ];
-        if (this.object.isModelFlipped)
-            this.canvasService.drawFlippedImage(this.object.model, modelCoords)
+
+        if (this.isModelFlipped)
+            this.canvasService.drawFlippedImage(this.model.image, modelCoords)
         else
-            this.canvasService.drawImage(this.object.model, modelCoords);
+            this.canvasService.drawImage(this.model.image, modelCoords);
     }
     
 }

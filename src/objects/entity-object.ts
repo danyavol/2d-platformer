@@ -1,26 +1,31 @@
 import { abs } from "../helpers/common-methods";
-import { InputObject } from "../interfaces/object.interface";
+import { ObjectConfig } from "../interfaces/platformer-config.interface";
 import CanvasService from "../services/canvas.service";
 import { ImageService } from "../services/image.service";
 import { BasicObject } from "./basic-object";
 
-const DEFAULT = {
-    sideAcceleration: 0.2,
+const DEFAULT_CONFIG = {
     maxSpeed: 100,
+    sideAcceleration: 0.2,
     gravity: 2000,
     maxFallSpeed: 2000,
     jumpPower: 800
 };
 
+export interface EntityConfig {
+    maxSpeed: number;           // Max speed (in pixels per second)
+    sideAcceleration: number;   // Duration of acceleration animation (in seconds)
+    gravity: number;            // Gravity (in pixels per second)
+    maxFallSpeed: number;       // Max fall speed (in pixels per second)
+    jumpPower: number;          // Jump power (in pixels per second)
+}
+
 export abstract class EntityObject extends BasicObject {
 
     private vx = 0; // X-axis speed (in pixels per second)
     private vy = 0; // Y-axis speed (in pixels per second)
-    private sideAcceleration: number = DEFAULT.sideAcceleration; // Duration of acceleration animation (in seconds)
-    private maxSpeed: number = DEFAULT.maxSpeed; // Max speed (in pixels per second)
-    private gravity: number = DEFAULT.gravity; // Gravity (in pixels per second)
-    private maxFallSpeed: number = DEFAULT.maxFallSpeed; // Max fall speed (in pixels per second)
-    private jumpPower: number = DEFAULT.jumpPower; // Jump power (in pixels per second)
+
+    private entityConfig: EntityConfig = DEFAULT_CONFIG;
 
     protected fps: number;
     private inAir = false;
@@ -28,7 +33,7 @@ export abstract class EntityObject extends BasicObject {
     private jumpButtonPressed = false;
 
     constructor(
-        config: InputObject, 
+        config: ObjectConfig, 
         imageService: ImageService, 
         canvasService: CanvasService
     ) {
@@ -38,28 +43,28 @@ export abstract class EntityObject extends BasicObject {
     // TODO: Don't let player to go out of bounds
     public moveRight(): void {
         this.sideButtonPressed = true;
-        this.object.isModelFlipped = true;
+        this.isModelFlipped = true;
         if (this.vx < 0) this.vx = -this.slowDown(this.vx);
         else this.vx = this.speedUp(this.vx);
         
-        this.object.coords[0] = this.object.coords[0] + this.vx/this.fps;
+        this.coords[0] = this.coords[0] + this.vx/this.fps;
     }
 
     public moveLeft(): void {
         this.sideButtonPressed = true;
-        this.object.isModelFlipped = false;
+        this.isModelFlipped = false;
         if (this.vx > 0) this.vx = this.slowDown(this.vx);
         else this.vx = -this.speedUp(this.vx);
 
-        this.object.coords[0] = this.object.coords[0] + this.vx/this.fps;
+        this.coords[0] = this.coords[0] + this.vx/this.fps;
     }
 
     public jump(): void {
         if (!this.inAir) {
             this.jumpButtonPressed = true;
             this.inAir = true;
-            this.vy = this.jumpPower;
-            this.object.coords[1] = this.object.coords[1] - this.vy/this.fps;
+            this.vy = this.entityConfig.jumpPower;
+            this.coords[1] = this.coords[1] - this.vy/this.fps;
         }
     }
 
@@ -71,18 +76,11 @@ export abstract class EntityObject extends BasicObject {
 
         this.sideButtonPressed = false;
         this.jumpButtonPressed = false;
-
-        super.render();
     };
 
-    protected setMaxSpeed(maxSpeed: number): void {
-        this.maxSpeed = maxSpeed;
+    protected setEntityConfig(entityConfig: Partial<EntityConfig>): void {
+        this.entityConfig = { ...DEFAULT_CONFIG, ...entityConfig };
     }
-
-    protected setSideAcceleration(sideAcceleration: number): void {
-        this.sideAcceleration = sideAcceleration;
-    }
-
     
     /****************** Execute this if no buttons pressed *********************/
 
@@ -92,14 +90,14 @@ export abstract class EntityObject extends BasicObject {
 
         if (this.vx > 0) this.vx = this.slowDown(this.vx);
         else this.vx = -this.slowDown(this.vx);
-        this.object.coords[0] = this.object.coords[0] + this.vx/this.fps;
+        this.coords[0] = this.coords[0] + this.vx/this.fps;
     }
 
     private _jump(): void {
         if (!this.inAir) return;
 
         this.vy = this.applyGravity(this.vy);
-        this.object.coords[1] = this.object.coords[1] - this.vy/this.fps;
+        this.coords[1] = this.coords[1] - this.vy/this.fps;
     }
 
     
@@ -107,30 +105,25 @@ export abstract class EntityObject extends BasicObject {
     /****************** Helpers *********************/
 
     private applyGravity(vy: number): number {
-        const ySpeed = vy - this.gravity / this.fps;
-        if (-ySpeed > this.maxFallSpeed) return -this.maxFallSpeed;
+        const ySpeed = vy - this.entityConfig.gravity / this.fps;
+        if (-ySpeed > this.entityConfig.maxFallSpeed) return -this.entityConfig.maxFallSpeed;
         else return ySpeed;
     }
 
     private speedUp(currSpeed: number): number {
         const speed = abs(currSpeed);
-        const newSpeed = speed + this.maxSpeed / (this.fps * this.sideAcceleration);
+        const newSpeed = speed + this.entityConfig.maxSpeed / (this.fps * this.entityConfig.sideAcceleration);
 
-        if (newSpeed > this.maxSpeed) return this.maxSpeed;
+        if (newSpeed > this.entityConfig.maxSpeed) return this.entityConfig.maxSpeed;
         else return newSpeed;
     }
 
     private slowDown(currSpeed: number): number {
         const speed = abs(currSpeed);
-        const newSpeed = speed - this.maxSpeed / (this.fps * this.sideAcceleration);
+        const newSpeed = speed - this.entityConfig.maxSpeed / (this.fps * this.entityConfig.sideAcceleration);
 
         if (newSpeed < 0) return 0;
         else return newSpeed;
     }
-
-    // private abs(num: number): number {
-    //     if (num < 0) return -num;
-    //     return num;
-    // }
     
 }

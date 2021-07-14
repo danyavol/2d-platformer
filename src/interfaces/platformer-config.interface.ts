@@ -1,11 +1,28 @@
-import { InputObject } from "./object.interface";
+import { ObjectModels } from "../services/image.service";
+import { ObjectTypes } from "../services/object.service";
 
 export interface PlatformerConfig {
-    canvasWidth: number;
-    canvasHeight: number;
-    game: {
-        mapWidth: number;
-        mapHeight: number;
+    canvas: {
+        width: number;
+        height: number;
     },
-    objects: InputObject[]
+    game: {
+        map: MapConfig,
+        objects: ObjectConfig[]
+    } 
+}
+
+export interface MapConfig {
+    width: number;
+    height: number;
+}
+
+export interface ObjectConfig {
+    type: ObjectTypes;
+    coords: [number, number];
+    size: [number, number];
+
+    modelName: ObjectModels;
+    modelOffset: [number, number];
+    modelSize: [number, number];
 }

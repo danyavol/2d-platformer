@@ -6,13 +6,12 @@ import { GameLoopService } from "./services/game-loop.service";
 
 export default class Platformer2D {
 
+    private imageService = new ImageService();
     private canvasService: CanvasService;
-    private imageService: ImageService;
     private objectService: ObjectService;
     private gameLoopService: GameLoopService;
 
     constructor(canvas: HTMLCanvasElement, private config: PlatformerConfig) {
-        this.imageService = new ImageService();
         this.canvasService = new CanvasService(canvas, config);
         this.objectService = new ObjectService(
             this.imageService, 
@@ -28,7 +27,6 @@ export default class Platformer2D {
     }
 
     private init(): void {
-        this.objectService.init(this.config.objects);
         this.gameLoopService.start();
     }
 };

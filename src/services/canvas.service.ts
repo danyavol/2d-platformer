@@ -17,8 +17,8 @@ export default class CanvasService {
     ) {
         this.element = canvasElement;
         this.canvas = canvasElement.getContext('2d');
-        this.canvasHeight = config.canvasHeight;
-        this.canvasWidth = config.canvasWidth;
+        this.canvasHeight = config.canvas.height;
+        this.canvasWidth = config.canvas.width;
 
         this.init();
     }

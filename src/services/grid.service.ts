@@ -40,7 +40,7 @@ export class GridService {
     }
 
     public addObjectToGrid(object: BasicObject): void {
-        const relatedCells = this.getRelatedCells(object.coords, object.modelSize);
+        const relatedCells = this.getRelatedCells(object.coords, object.model.size);
         relatedCells.forEach( index => this.grid[index].push(object) );
         object.relatedCells = relatedCells;
     }

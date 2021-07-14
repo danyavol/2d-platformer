@@ -1,4 +1,4 @@
-import { InputObject } from "../../interfaces/object.interface";
+import { ObjectConfig } from "../../interfaces/platformer-config.interface";
 import CanvasService from "../../services/canvas.service";
 import { ImageService } from "../../services/image.service";
 import { EntityObject } from "../entity-object";
@@ -11,15 +11,16 @@ export class Player extends EntityObject {
     private isJumpPressed = false;
 
     constructor(
-        config: InputObject, 
+        config: ObjectConfig, 
         imageService: ImageService, 
         canvasService: CanvasService
     ) {
         super(config, imageService, canvasService);
         
-        this.object.hasCollision = true;
-        this.object.layer = 2;
-        this.setMaxSpeed(350);
+        this.hasCollision = true;
+        this.setEntityConfig({
+            maxSpeed: 350
+        });
         
         this.initEventListeners();
     }
