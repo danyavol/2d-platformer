@@ -1,3 +1,4 @@
+import { abs } from "../helpers/common-methods";
 import { MapConfig, ObjectConfig, PlatformerConfig } from "../interfaces/platformer-config.interface";
 import { BasicObject } from "../objects/basic-object";
 import { Player } from "../objects/player/player.object";
@@ -47,20 +48,19 @@ export class ObjectService {
             }
         }
 
-        // this.gridService.init([...this.staticObjects, ...this.dynamicObjects]);
+        this.staticObjects.forEach( o => this.gridService.addObjectToGrid(o) );
     }
 
     public renderObjects(fps: number): void {
-        this.allObjects.forEach( o => this.gridService.removeObjectFromGrid(o) );
-        
         this.staticObjects.forEach(o => o.drawObject());
-        this.dynamicObjects.forEach(o => {
-            o.renderEntity(fps);
-            this.checkBounds(o);
-            o.drawObject();
-        });
 
-        this.allObjects.forEach( o => this.gridService.addObjectToGrid(o) );
+        this.dynamicObjects.forEach(o => {
+            o.updateState(fps);
+            this.checkBounds(o);
+            this.gridService.updateObjectPosition(o);
+            this.checkAllCollisions(o, this.gridService.getNeighbors(o));
+            o.drawObject();
+        });  
     }
 
     private clearObjects(): void {
@@ -84,5 +84,49 @@ export class ObjectService {
             y = this.mapConfig.height - obj.size[1];
 
         obj.coords = [x, y];
+    }
+
+    private checkAllCollisions(obj: BasicObject, objectsAround: BasicObject[]): void {
+        let hasOverlaps = false;
+        objectsAround.forEach( o => this.checkCollision(obj, o) ? hasOverlaps = true : null );
+        if (hasOverlaps) this.gridService.updateObjectPosition(obj);
+    }
+    
+    private checkCollision(o1: BasicObject, o2: BasicObject): boolean {
+        // if o1 overlaps with o2, then o1 will be moved out from o2
+        // P.S. This function is hell for debugging :)
+        let [o1_x1, o1_y1] = o1.coords;
+        const [o1_x2, o1_y2] = [ o1.coords[0]+o1.size[0], o1.coords[1]+o1.size[1] ];
+
+        const [o2_x1, o2_y1] = o2.coords;
+        const [o2_x2, o2_y2] = [ o2.coords[0]+o2.size[0], o2.coords[1]+o2.size[1] ];
+
+        // Check horizontal overlaps
+        let horizontalOverlap = false;
+        const h1 = o1_x2 - o2_x1;
+        const h2 = o1_x1 - o2_x2;
+        if ( (h1 < 0 && h2 > 0) || (h1 > 0 && h2 < 0) ) horizontalOverlap = true;
+
+        // Check vertical overlaps
+        let verticalOverlap = false;
+        const v1 = o1_y2 - o2_y1;
+        const v2 = o1_y1 - o2_y2;
+        if ( (v1 < 0 && v2 > 0) || (v1 > 0 && v2 < 0) ) verticalOverlap = true;
+
+        // If overlaps in all axes
+        if (verticalOverlap && horizontalOverlap) {
+            const hOffset = abs(h1) < abs(h2) ? -h1 : -h2;
+            const vOffset = abs(v1) < abs(v2) ? -v1 : -v2;
+            
+            if (abs(hOffset) < abs(vOffset))
+                o1_x1 += hOffset;
+            else
+                o1_y1 += vOffset;
+
+            o1.coords = [o1_x1, o1_y1];
+            return true;
+        }
+
+        return false;
     }
 }

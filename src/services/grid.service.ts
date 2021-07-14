@@ -1,5 +1,6 @@
 import { swapArrayElements } from "../helpers/common-methods";
 import { BasicObject } from "../objects/basic-object";
+import { Player } from "../objects/player/player.object";
 
 const DEFAULT = {
     cellWidth: 150,
@@ -13,16 +14,28 @@ export class GridService {
     private cellWidth = DEFAULT.cellWidth;
     private cellHeight = DEFAULT.cellHeight;
 
+    
     constructor(
         private mapWidth: number, 
         private mapHeight: number
     ) {
         this.resetGrid();
     }
-    
-    public init(objects: BasicObject[]): void {
-        objects.forEach(obj => this.addObjectToGrid(obj));
-        console.log(this.grid);
+
+
+    public getNeighbors(object: BasicObject): BasicObject[] {
+        const output = new Set<BasicObject>();
+        object.relatedCells.forEach(index => {
+            this.grid[index].forEach(o => {
+                if (o !== object) output.add(o);
+            });
+        });
+        return Array.from(output);
+    }
+
+    public updateObjectPosition(o: BasicObject): void {
+        this.removeObjectFromGrid(o);
+        this.addObjectToGrid(o);
     }
 
     // TODO: Check if it faster not remove/add all items, but update only changed items
@@ -37,13 +50,19 @@ export class GridService {
                 }
             }
         });
+        object.relatedCells = [];
     }
 
     public addObjectToGrid(object: BasicObject): void {
-        const relatedCells = this.getRelatedCells(object.coords, object.model.size);
+        if (object instanceof Player) console.log(object.coords);
+        
+        const relatedCells = this.getRelatedCells(object.coords, object.size);
+        if (object instanceof Player) console.log(relatedCells);
         relatedCells.forEach( index => this.grid[index].push(object) );
         object.relatedCells = relatedCells;
     }
+
+
     
     private resetGrid(): void {
         const cells = this.getRelatedCells([0, 0], [this.mapWidth, this.mapHeight]);

@@ -25,7 +25,7 @@ export class Player extends EntityObject {
         this.initEventListeners();
     }
 
-    public renderEntity(fps: number): void {
+    public updateState(fps: number): void {
         switch (this.pressedDirection) {
             case 'left':
                 super.moveLeft(); break;
@@ -35,7 +35,7 @@ export class Player extends EntityObject {
 
         if (this.isJumpPressed) super.jump();
 
-        super.renderEntity(fps);
+        super.updateState(fps);
     }
 
     private initEventListeners(): void {
