@@ -22,15 +22,14 @@ export interface EntityConfig {
 
 export abstract class EntityObject extends BasicObject {
 
+    protected fps: number;
+
     private vx = 0; // X-axis speed (in pixels per second)
     private vy = 0; // Y-axis speed (in pixels per second)
-
-    private entityConfig: EntityConfig = DEFAULT_CONFIG;
-
-    protected fps: number;
-    private inAir = false;
+    private entityConfig: EntityConfig = DEFAULT_CONFIG;  
     private sideButtonPressed = false;
     private jumpButtonPressed = false;
+    private inAir = false;
 
     constructor(
         config: ObjectConfig, 
@@ -72,7 +71,7 @@ export abstract class EntityObject extends BasicObject {
         this.fps = fps;
 
         if (!this.sideButtonPressed) this._stop();
-        if (!this.jumpButtonPressed) this._jump();
+        if (!this.jumpButtonPressed) this._fall();
 
         this.sideButtonPressed = false;
         this.jumpButtonPressed = false;
@@ -80,6 +79,19 @@ export abstract class EntityObject extends BasicObject {
 
     protected setEntityConfig(entityConfig: Partial<EntityConfig>): void {
         this.entityConfig = { ...DEFAULT_CONFIG, ...entityConfig };
+    }
+
+    public stopFalling(): void {
+        this.inAir = false;
+        this.vy = 0;
+    }
+
+    public startFalling(): void {
+        this.vy = this.applyGravity(0);
+    }
+
+    public resetSideAcceleration(): void {
+        this.vx = 0;
     }
     
     /****************** Execute this if no buttons pressed *********************/
@@ -93,9 +105,9 @@ export abstract class EntityObject extends BasicObject {
         this.coords[0] = this.coords[0] + this.vx/this.fps;
     }
 
-    private _jump(): void {
-        if (!this.inAir) return;
-
+    private _fall(): void {
+        // if (!this.inAir) return;
+        this.inAir = true;
         this.vy = this.applyGravity(this.vy);
         this.coords[1] = this.coords[1] - this.vy/this.fps;
     }

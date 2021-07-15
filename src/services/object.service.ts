@@ -1,6 +1,7 @@
 import { abs } from "../helpers/common-methods";
 import { MapConfig, ObjectConfig, PlatformerConfig } from "../interfaces/platformer-config.interface";
 import { BasicObject } from "../objects/basic-object";
+import { EntityObject } from "../objects/entity-object";
 import { Player } from "../objects/player/player.object";
 import { Wall } from "../objects/wall/wall.object";
 import CanvasService from "./canvas.service";
@@ -72,27 +73,36 @@ export class ObjectService {
         return [ ...this.staticObjects, ...this.dynamicObjects ];
     }
 
-    private checkBounds(obj: BasicObject): void {
+    private checkBounds(obj: EntityObject): void {
         let [x, y] = obj.coords;
 
-        if (x < 0) x = 0;
-        else if (x + obj.size[0] > this.mapConfig.width)
+        if (x < 0) {
+            x = 0;
+            obj.resetSideAcceleration();
+        } else if (x + obj.size[0] > this.mapConfig.width) {
             x = this.mapConfig.width - obj.size[0];
+            obj.resetSideAcceleration();
+        }
 
-        if (y < 0) y = 0;
-        else if (y + obj.size[1] > this.mapConfig.height)
+        if (y < 0) {
+            y = 0;
+            obj.startFalling();
+        } else if (y + obj.size[1] > this.mapConfig.height) {
             y = this.mapConfig.height - obj.size[1];
+            obj.stopFalling();
+        }
+            
 
         obj.coords = [x, y];
     }
 
-    private checkAllCollisions(obj: BasicObject, objectsAround: BasicObject[]): void {
+    private checkAllCollisions(obj: EntityObject, objectsAround: BasicObject[]): void {
         let hasOverlaps = false;
         objectsAround.forEach( o => this.checkCollision(obj, o) ? hasOverlaps = true : null );
         if (hasOverlaps) this.gridService.updateObjectPosition(obj);
     }
     
-    private checkCollision(o1: BasicObject, o2: BasicObject): boolean {
+    private checkCollision(o1: EntityObject, o2: BasicObject): boolean {
         // if o1 overlaps with o2, then o1 will be moved out from o2
         // P.S. This function is hell for debugging :)
         let [o1_x1, o1_y1] = o1.coords;
@@ -115,13 +125,21 @@ export class ObjectService {
 
         // If overlaps in all axes
         if (verticalOverlap && horizontalOverlap) {
-            const hOffset = abs(h1) < abs(h2) ? -h1 : -h2;
-            const vOffset = abs(v1) < abs(v2) ? -v1 : -v2;
+            const hOffset = abs(h1) < abs(h2) ? h1 : h2;
+            const vOffset = abs(v1) < abs(v2) ? v1 : v2;
             
-            if (abs(hOffset) < abs(vOffset))
-                o1_x1 += hOffset;
-            else
-                o1_y1 += vOffset;
+            if (abs(hOffset) < abs(vOffset)) {
+                o1_x1 -= hOffset;
+                o1.resetSideAcceleration();
+            } else {
+                o1_y1 -= vOffset;
+                if (vOffset > 0) {
+                    o1.stopFalling(); 
+                } else {
+                    o1.startFalling();
+                }
+            }
+                
 
             o1.coords = [o1_x1, o1_y1];
             return true;

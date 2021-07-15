@@ -53,11 +53,8 @@ export class GridService {
         object.relatedCells = [];
     }
 
-    public addObjectToGrid(object: BasicObject): void {
-        if (object instanceof Player) console.log(object.coords);
-        
+    public addObjectToGrid(object: BasicObject): void {        
         const relatedCells = this.getRelatedCells(object.coords, object.size);
-        if (object instanceof Player) console.log(relatedCells);
         relatedCells.forEach( index => this.grid[index].push(object) );
         object.relatedCells = relatedCells;
     }
