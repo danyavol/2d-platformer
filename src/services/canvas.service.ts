@@ -44,7 +44,7 @@ export default class CanvasService {
         } else if ( this.translation.h + this.canvasWidth - this.breakpoints.right < x + w) {
             transX = this.translation.h + ( x + w - (this.translation.h + this.canvasWidth - this.breakpoints.right));
         }
-        if (transX != null && transX != this.translation.h && transX > 0 && transX < this.mapWidth-this.canvasWidth) {
+        if (transX != null && transX != this.translation.h && transX >= 0 && transX <= this.mapWidth-this.canvasWidth) {
             this.canvas.translate(this.translation.h - transX, 0);
             this.translation.h = transX;
         }
@@ -56,7 +56,7 @@ export default class CanvasService {
         } else if ( this.translation.v + this.canvasHeight - this.breakpoints.bottom < y + h) {
             transY = this.translation.v + ( y + h - (this.translation.v + this.canvasHeight - this.breakpoints.bottom));
         }
-        if (transY != null && transY != this.translation.v && transY > 0 && transY < this.mapHeight-this.canvasHeight) {
+        if (transY != null && transY >= 0 && transY <= this.mapHeight-this.canvasHeight) {
             this.canvas.translate(0, this.translation.v - transY);
             this.translation.v = transY;
         }
