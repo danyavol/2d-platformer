@@ -5,8 +5,14 @@ const GAME_CONFIG = {
     },
     game: {
         map: {
-            width: 900,
-            height: 600
+            width: 1500,
+            height: 800
+        },
+        camera: {
+            top: '1:4',
+            right: '1:2',
+            bottom: '1:4',
+            left: '1:4',
         },
         objects: [
             {
@@ -32,6 +38,22 @@ const GAME_CONFIG = {
                 modelName: 'grass',
                 modelOffset: [0, 0],
                 modelSize: [120, 20],   
+            },
+            {
+                type: 'wall',
+                coords: [400, 655],
+                size: [120, 20],
+                modelName: 'grass',
+                modelOffset: [0, 0],
+                modelSize: [120, 20],   
+            },
+            {
+                type: 'wall',
+                coords: [700, 555],
+                size: [60, 20],
+                modelName: 'grass',
+                modelOffset: [0, 0],
+                modelSize: [60, 20],   
             },
             {
                 type: 'wall',

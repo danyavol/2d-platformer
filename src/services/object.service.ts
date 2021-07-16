@@ -14,6 +14,7 @@ export class ObjectService {
 
     private staticObjects: Wall[] = [];
     private dynamicObjects: Player[] = [];
+    private player: Player;
     
     private gridService: GridService;
     private mapConfig: MapConfig;
@@ -42,9 +43,7 @@ export class ObjectService {
                     );
                     break
                 case 'player':
-                    this.dynamicObjects.push(
-                        new Player(obj, this.imageService, this.canvasService)
-                    ); 
+                    this.player = new Player(obj, this.imageService, this.canvasService); 
                     break;
             }
         }
@@ -53,15 +52,26 @@ export class ObjectService {
     }
 
     public renderObjects(fps: number): void {
+        /* Static objects render */
         this.staticObjects.forEach(o => o.drawObject());
 
+        /* Player render */
+        this.renderDynamicObject(this.player, fps);
+        this.canvasService.updateCameraTranslation(...this.player.coords, ...this.player.size);
+
+
+        /* Dynamic objects render */
         this.dynamicObjects.forEach(o => {
-            o.updateState(fps);
-            this.checkBounds(o);
-            this.gridService.updateObjectPosition(o);
-            this.checkAllCollisions(o, this.gridService.getNeighbors(o));
-            o.drawObject();
-        });  
+            this.renderDynamicObject(o, fps);
+        });
+    }
+
+    private renderDynamicObject(object: EntityObject, fps: number): void {
+        object.updateState(fps);
+        this.checkBounds(object);
+        this.gridService.updateObjectPosition(object);
+        this.checkAllCollisions(object, this.gridService.getNeighbors(object));
+        object.drawObject();
     }
 
     private clearObjects(): void {

@@ -67,7 +67,7 @@ export abstract class EntityObject extends BasicObject {
         }
     }
 
-    protected updateState(fps: number): void {
+    public updateState(fps: number): void {
         this.fps = fps;
 
         if (!this.sideButtonPressed) this._stop();
