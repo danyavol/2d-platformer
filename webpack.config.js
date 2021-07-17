@@ -4,14 +4,27 @@ const path = require('path');
 module.exports = {
     devtool: 'source-map',
     mode: 'development',
-	entry: path.resolve(__dirname, './src/index.ts'),
+	entry: {
+        lib: { 
+            import: './lib/index.ts',
+            filename: 'dist/platformer-2d.js',
+            library: {
+                name: 'Platformer2D',
+                type: 'umd'
+            }
+        },
+        sandbox: { 
+            import: './sandbox/src/index.ts',
+            filename: 'sandbox/index.js'
+        },
+    },
 	output: {
-		filename: 'platformer-2d.js',
-		path: path.resolve(__dirname, 'dist'),
-        library: {
-            name: 'Platformer2D',
-            type: 'umd'
-        }
+		// filename: 'platformer-2d.js',
+		path: path.resolve(__dirname),
+        // library: {
+        //     name: 'Platformer2D',
+        //     type: 'umd'
+        // }
     },
     module: {
         rules: [
@@ -28,5 +41,11 @@ module.exports = {
     },
     resolve: {
         extensions: [ '.ts', '.tsx', '.js' ]
-    }
+    },
+    devServer: {
+        contentBase: [
+          path.join(__dirname, 'dist'),
+          path.join(__dirname, 'sandbox'),
+        ],
+    },
 }

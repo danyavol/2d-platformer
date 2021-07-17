@@ -1,14 +1,4 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["Platformer2D"] = factory();
-	else
-		root["Platformer2D"] = factory();
-})(self, function() {
-return /******/ (() => { // webpackBootstrap
+/******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
@@ -51,6 +41,42 @@ function abs(num) {
         return -num;
     return num;
 }
+
+
+/***/ }),
+
+/***/ "./lib/index.ts":
+/*!**********************!*\
+  !*** ./lib/index.ts ***!
+  \**********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Platformer2D)
+/* harmony export */ });
+/* harmony import */ var _services_canvas_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./services/canvas.service */ "./lib/services/canvas.service.ts");
+/* harmony import */ var _services_image_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./services/image.service */ "./lib/services/image.service.ts");
+/* harmony import */ var _services_object_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./services/object.service */ "./lib/services/object.service.ts");
+/* harmony import */ var _services_game_loop_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./services/game-loop.service */ "./lib/services/game-loop.service.ts");
+
+
+
+
+class Platformer2D {
+    constructor(canvas, config) {
+        this.config = config;
+        this.imageService = new _services_image_service__WEBPACK_IMPORTED_MODULE_1__.ImageService();
+        this.canvasService = new _services_canvas_service__WEBPACK_IMPORTED_MODULE_0__.default(canvas, config);
+        this.objectService = new _services_object_service__WEBPACK_IMPORTED_MODULE_2__.ObjectService(this.imageService, this.canvasService, config);
+        this.gameLoopService = new _services_game_loop_service__WEBPACK_IMPORTED_MODULE_3__.GameLoopService(this.canvasService, this.objectService);
+        this.imageService.isLoaded.then(() => this.init());
+    }
+    init() {
+        this.gameLoopService.start();
+    }
+}
+;
 
 
 /***/ }),
@@ -723,6 +749,97 @@ class ObjectService {
 }
 
 
+/***/ }),
+
+/***/ "./sandbox/src/platformer-config.ts":
+/*!******************************************!*\
+  !*** ./sandbox/src/platformer-config.ts ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+const GAME_CONFIG = {
+    canvas: {
+        width: 900,
+        height: 600
+    },
+    game: {
+        map: {
+            width: 1500,
+            height: 800
+        },
+        camera: {
+            top: '1:4',
+            right: '1:2',
+            bottom: '1:4',
+            left: '1:4',
+        },
+        objects: [
+            {
+                type: 'player',
+                coords: [50, 265],
+                size: [70, 70],
+                modelName: 'bear',
+                modelOffset: [0, -15],
+                modelSize: [70, 85],
+            },
+            {
+                type: 'wall',
+                coords: [0, 335],
+                size: [350, 120],
+                modelName: 'grass',
+                modelOffset: [0, 0],
+                modelSize: [350, 120],
+            },
+            {
+                type: 'wall',
+                coords: [400, 455],
+                size: [120, 20],
+                modelName: 'grass',
+                modelOffset: [0, 0],
+                modelSize: [120, 20],
+            },
+            {
+                type: 'wall',
+                coords: [400, 655],
+                size: [120, 20],
+                modelName: 'grass',
+                modelOffset: [0, 0],
+                modelSize: [120, 20],
+            },
+            {
+                type: 'wall',
+                coords: [700, 555],
+                size: [60, 20],
+                modelName: 'grass',
+                modelOffset: [0, 0],
+                modelSize: [60, 20],
+            },
+            {
+                type: 'wall',
+                coords: [600, 290],
+                size: [40, 20],
+                modelName: 'grass',
+                modelOffset: [0, 0],
+                modelSize: [40, 20],
+            },
+            {
+                type: 'wall',
+                coords: [800, 150],
+                size: [40, 30],
+                modelName: 'grass',
+                modelOffset: [0, 0],
+                modelSize: [40, 30],
+            },
+        ]
+    }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GAME_CONFIG);
+
+
 /***/ })
 
 /******/ 	});
@@ -784,40 +901,20 @@ class ObjectService {
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-/*!**********************!*\
-  !*** ./lib/index.ts ***!
-  \**********************/
+/*!******************************!*\
+  !*** ./sandbox/src/index.ts ***!
+  \******************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Platformer2D)
-/* harmony export */ });
-/* harmony import */ var _services_canvas_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./services/canvas.service */ "./lib/services/canvas.service.ts");
-/* harmony import */ var _services_image_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./services/image.service */ "./lib/services/image.service.ts");
-/* harmony import */ var _services_object_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./services/object.service */ "./lib/services/object.service.ts");
-/* harmony import */ var _services_game_loop_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./services/game-loop.service */ "./lib/services/game-loop.service.ts");
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../lib */ "./lib/index.ts");
+/* harmony import */ var _platformer_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./platformer-config */ "./sandbox/src/platformer-config.ts");
 
+"../../dist/platformer-2d.js";
 
-
-
-class Platformer2D {
-    constructor(canvas, config) {
-        this.config = config;
-        this.imageService = new _services_image_service__WEBPACK_IMPORTED_MODULE_1__.ImageService();
-        this.canvasService = new _services_canvas_service__WEBPACK_IMPORTED_MODULE_0__.default(canvas, config);
-        this.objectService = new _services_object_service__WEBPACK_IMPORTED_MODULE_2__.ObjectService(this.imageService, this.canvasService, config);
-        this.gameLoopService = new _services_game_loop_service__WEBPACK_IMPORTED_MODULE_3__.GameLoopService(this.canvasService, this.objectService);
-        this.imageService.isLoaded.then(() => this.init());
-    }
-    init() {
-        this.gameLoopService.start();
-    }
-}
-;
+const canvas = document.getElementById('game-canvas');
+const platformer = new _lib__WEBPACK_IMPORTED_MODULE_0__.default(canvas, _platformer_config__WEBPACK_IMPORTED_MODULE_1__.default);
 
 })();
 
-/******/ 	return __webpack_exports__;
 /******/ })()
 ;
-});
-//# sourceMappingURL=platformer-2d.js.map
+//# sourceMappingURL=index.js.map

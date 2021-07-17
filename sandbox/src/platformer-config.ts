@@ -1,4 +1,6 @@
-const GAME_CONFIG = {
+import { PlatformerConfig } from "../../lib/interfaces/platformer-config.interface";
+
+const GAME_CONFIG: PlatformerConfig = {
     canvas: {
         width: 900,
         height: 600
@@ -74,3 +76,4 @@ const GAME_CONFIG = {
         ]
     } 
 }
+export default GAME_CONFIG;
