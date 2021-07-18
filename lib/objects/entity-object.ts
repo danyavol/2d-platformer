@@ -1,5 +1,5 @@
 import { abs } from "../helpers/common-methods";
-import { ObjectConfig } from "../interfaces/platformer-config.interface";
+import { ParsedObjectConfig } from "../interfaces/parsed-game-config.interface";
 import CanvasService from "../services/canvas.service";
 import { ImageService } from "../services/image.service";
 import { BasicObject } from "./basic-object";
@@ -32,17 +32,16 @@ export abstract class EntityObject extends BasicObject {
     private inAir = false;
 
     constructor(
-        config: ObjectConfig, 
-        imageService: ImageService, 
+        config: ParsedObjectConfig, 
         canvasService: CanvasService
     ) {
-        super(config, imageService, canvasService);
+        super(config, canvasService);
     }
 
     // TODO: Don't let player to go out of bounds
     public moveRight(): void {
         this.sideButtonPressed = true;
-        this.isModelFlipped = true;
+        this.isModelFlipped = false;
         if (this.vx < 0) this.vx = -this.slowDown(this.vx);
         else this.vx = this.speedUp(this.vx);
         
@@ -51,7 +50,7 @@ export abstract class EntityObject extends BasicObject {
 
     public moveLeft(): void {
         this.sideButtonPressed = true;
-        this.isModelFlipped = false;
+        this.isModelFlipped = true;
         if (this.vx > 0) this.vx = this.slowDown(this.vx);
         else this.vx = -this.speedUp(this.vx);
 

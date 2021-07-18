@@ -1,5 +1,6 @@
 import { abs } from "../helpers/common-methods";
-import { MapConfig, ObjectConfig, PlatformerConfig } from "../interfaces/platformer-config.interface";
+import { ObjectConfig } from "../interfaces/game-config.interface";
+import { ParsedGameConfig, ParsedObjectConfig } from "../interfaces/parsed-game-config.interface";
 import { BasicObject } from "../objects/basic-object";
 import { EntityObject } from "../objects/entity-object";
 import { Player } from "../objects/player/player.object";
@@ -17,34 +18,35 @@ export class ObjectService {
     private player: Player;
     
     private gridService: GridService;
-    private mapConfig: MapConfig;
-    private objectsConfig: ObjectConfig[];
+    private map: {width: number, height: number};
 
     constructor(
         private imageService: ImageService,
         private canvasService: CanvasService,
-        config: PlatformerConfig
+        config: ParsedGameConfig
     ) {
-        this.mapConfig = config.game.map;
-        this.objectsConfig = config.game.objects
-        this.gridService = new GridService(this.mapConfig.width, this.mapConfig.height);
+        this.map = {
+            width: config.map.width,
+            height: config.map.height,
+        };
+        this.gridService = new GridService(config.map);
+        
 
-        this.init();
+        this.init(config);
     }
 
-    public init(): void {
+    public init(config: ParsedGameConfig): void {
         this.clearObjects();
 
-        for (let obj of this.objectsConfig) {
+        this.player = new Player(config.player, this.canvasService, this.imageService);
+        
+        for (let obj of config.objects) {
             switch(obj.type) {
                 case 'wall':
                     this.staticObjects.push(
-                        new Wall(obj, this.imageService, this.canvasService)
+                        new Wall(obj, this.canvasService, this.imageService)
                     );
                     break
-                case 'player':
-                    this.player = new Player(obj, this.imageService, this.canvasService); 
-                    break;
             }
         }
 
@@ -89,16 +91,16 @@ export class ObjectService {
         if (x < 0) {
             x = 0;
             obj.resetSideAcceleration();
-        } else if (x + obj.size[0] > this.mapConfig.width) {
-            x = this.mapConfig.width - obj.size[0];
+        } else if (x + obj.size[0] > this.map.width) {
+            x = this.map.width - obj.size[0];
             obj.resetSideAcceleration();
         }
 
         if (y < 0) {
             y = 0;
             obj.startFalling();
-        } else if (y + obj.size[1] > this.mapConfig.height) {
-            y = this.mapConfig.height - obj.size[1];
+        } else if (y + obj.size[1] > this.map.height) {
+            y = this.map.height - obj.size[1];
             obj.stopFalling();
         }
             

@@ -1,79 +1,30 @@
-import { PlatformerConfig } from "../../lib/interfaces/platformer-config.interface";
+import { GameConfig } from "../../lib/interfaces/game-config.interface";
 
-const GAME_CONFIG: PlatformerConfig = {
+const GAME_CONFIG: GameConfig = {
     canvas: {
         width: 900,
         height: 600
     },
-    game: {
-        map: {
-            width: 1500,
-            height: 800
-        },
-        camera: {
-            top: '1:4',
-            right: '1:2',
-            bottom: '1:4',
-            left: '1:4',
-        },
-        objects: [
-            {
-                type: 'player',
-                coords: [50, 265],
-                size: [70, 70],
-                modelName: 'bear',
-                modelOffset: [0, -15],
-                modelSize: [70, 85], 
-            },
-            {
-                type: 'wall',
-                coords: [0, 335],
-                size: [350, 120],
-                modelName: 'grass',
-                modelOffset: [0, 0],
-                modelSize: [350, 120],   
-            },
-            {
-                type: 'wall',
-                coords: [400, 455],
-                size: [120, 20],
-                modelName: 'grass',
-                modelOffset: [0, 0],
-                modelSize: [120, 20],   
-            },
-            {
-                type: 'wall',
-                coords: [400, 655],
-                size: [120, 20],
-                modelName: 'grass',
-                modelOffset: [0, 0],
-                modelSize: [120, 20],   
-            },
-            {
-                type: 'wall',
-                coords: [700, 555],
-                size: [60, 20],
-                modelName: 'grass',
-                modelOffset: [0, 0],
-                modelSize: [60, 20],   
-            },
-            {
-                type: 'wall',
-                coords: [600, 290],
-                size: [40, 20],
-                modelName: 'grass',
-                modelOffset: [0, 0],
-                modelSize: [40, 20],   
-            },
-            {
-                type: 'wall',
-                coords: [800, 150],
-                size: [40, 30],
-                modelName: 'grass',
-                modelOffset: [0, 0],
-                modelSize: [40, 30],   
-            },
-        ]
-    } 
+    map: {
+        width: 20,
+        height: 10,
+        cellSize: 70,
+    },
+    camera: {
+        top: '1:4',
+        right: '1:2',
+        bottom: '1:4',
+        left: '1:4',
+    },
+    player: { coords: [1, 3], type: 'player', model: 'alien2', },
+    objects: [
+        { coords: [0, 5], type: 'wall', model: 'grassMid' },
+        { coords: [1, 5], type: 'wall', model: 'grassMid' },
+        { coords: [2, 5], type: 'wall', model: 'grassMid' },
+        { coords: [3, 6], type: 'wall', model: 'grassMid' },
+        { coords: [3, 7], type: 'wall', model: 'grassCenter' },
+        { coords: [4, 8], type: 'wall', model: 'grassMid' },
+        { coords: [5, 9], type: 'wall', model: 'grassMid' },
+    ] 
 }
 export default GAME_CONFIG;

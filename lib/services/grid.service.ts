@@ -1,24 +1,13 @@
 import { swapArrayElements } from "../helpers/common-methods";
+import { ParsedMapConfig } from "../interfaces/parsed-game-config.interface";
 import { BasicObject } from "../objects/basic-object";
-import { Player } from "../objects/player/player.object";
-
-const DEFAULT = {
-    cellWidth: 150,
-    cellHeight: 150
-}
 
 export class GridService {
 
     private grid: {[index: string]: BasicObject[]} = {};
 
-    private cellWidth = DEFAULT.cellWidth;
-    private cellHeight = DEFAULT.cellHeight;
-
     
-    constructor(
-        private mapWidth: number, 
-        private mapHeight: number
-    ) {
+    constructor(private map: ParsedMapConfig) {
         this.resetGrid();
     }
 
@@ -62,7 +51,7 @@ export class GridService {
 
     
     private resetGrid(): void {
-        const cells = this.getRelatedCells([0, 0], [this.mapWidth, this.mapHeight]);
+        const cells = this.getRelatedCells([0, 0], [this.map.width, this.map.height]);
         cells.forEach(index => this.grid[index] = []);
     }
  
@@ -80,8 +69,8 @@ export class GridService {
     }
 
     private getCellCoords(objCoords: [number, number]): [number, number] {
-        const x = Math.floor(objCoords[0] / this.cellWidth);
-        const y = Math.floor(objCoords[1] / this.cellHeight);
+        const x = Math.floor(objCoords[0] / this.map.cells.size);
+        const y = Math.floor(objCoords[1] / this.map.cells.size);
         return [x, y];
     }
 

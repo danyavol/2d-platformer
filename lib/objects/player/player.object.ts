@@ -1,26 +1,40 @@
-import { ObjectConfig } from "../../interfaces/platformer-config.interface";
+import { ParsedObjectConfig } from "../../interfaces/parsed-game-config.interface";
 import CanvasService from "../../services/canvas.service";
-import { ImageService } from "../../services/image.service";
+import { ImageService, PlayerTextures } from "../../services/image.service";
+import { ObjectModel } from "../basic-object";
 import { EntityObject } from "../entity-object";
 
 export class Player extends EntityObject {
 
+    public hasCollision = true;
+    public model: ObjectModel;
+
+    private textures: PlayerTextures;
     private pressedDirection: 'left' | 'right' = null;
     private isLeftPressed = false;
     private isRightPressed = false;
     private isJumpPressed = false;
 
     constructor(
-        config: ObjectConfig, 
-        imageService: ImageService, 
-        canvasService: CanvasService
+        config: ParsedObjectConfig, 
+        canvasService: CanvasService,
+        imageService: ImageService
     ) {
-        super(config, imageService, canvasService);
-        
-        this.hasCollision = true;
+        super(config, canvasService);
+
         this.setEntityConfig({
             maxSpeed: 350
         });
+        this.textures = imageService.players[config.model.name];
+
+        config.coords[1] = config.coords[1]*1.4;
+        config.size[1] = config.size[1]*1.4;
+
+        this.model = {
+            image: this.textures.stand,
+            offset: config.model.offset,
+            size: [config.model.size[0], config.model.size[1]*1.4]
+        };
         
         this.initEventListeners();
     }

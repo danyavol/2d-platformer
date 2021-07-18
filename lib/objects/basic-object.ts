@@ -1,36 +1,31 @@
 
-import { ObjectConfig } from "../interfaces/platformer-config.interface";
+import { ParsedObjectConfig } from "../interfaces/parsed-game-config.interface";
 import CanvasService, { RectangleCoords } from "../services/canvas.service";
-import { ImageService, ObjectModels } from "../services/image.service";
+
+export interface ObjectModel {
+    image: HTMLImageElement,
+    offset: [number, number],
+    size: [number, number]
+}
 
 export abstract class BasicObject {
 
     public coords: [number, number];
-    public readonly size: [number, number];
-    public readonly model: {
-        name: ObjectModels,
-        image: HTMLImageElement,
-        offset: [number, number],
-        size: [number, number],
-    };
-    public hasCollision: boolean;
-    public isModelFlipped: boolean = false;
+    public size: [number, number];
+    public abstract model: ObjectModel;
+    public abstract hasCollision: boolean;
     public relatedCells: string[] = [];
+    protected isModelFlipped: boolean = false;
+    protected reverseModel = false;
 
 
     constructor(
-        config: ObjectConfig,
-        imageService: ImageService,
+        config: ParsedObjectConfig,
         private canvasService: CanvasService
     ) {
         this.coords = config.coords;
         this.size = config.size;
-        this.model = {
-            name: config.modelName,
-            image: imageService.files[config.modelName],
-            offset: config.modelOffset,
-            size: config.modelSize
-        };
+        
     }
 
     public drawObject() {
@@ -40,10 +35,10 @@ export abstract class BasicObject {
             ...this.model.size
         ];
 
-        if (this.isModelFlipped)
-            this.canvasService.drawFlippedImage(this.model.image, modelCoords)
-        else
+        if ((!this.isModelFlipped && !this.reverseModel) || (this.isModelFlipped && this.reverseModel))
             this.canvasService.drawImage(this.model.image, modelCoords);
+        else
+            this.canvasService.drawFlippedImage(this.model.image, modelCoords);
     }
     
 }

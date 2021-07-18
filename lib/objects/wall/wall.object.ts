@@ -1,18 +1,26 @@
-import { ObjectConfig } from "../../interfaces/platformer-config.interface";
+import { ObjectConfig } from "../../interfaces/game-config.interface";
+import { ParsedObjectConfig } from "../../interfaces/parsed-game-config.interface";
 import CanvasService from "../../services/canvas.service";
 import { ImageService } from "../../services/image.service";
-import { BasicObject } from "../basic-object";
+import { BasicObject, ObjectModel } from "../basic-object";
 
 export class Wall extends BasicObject {
 
-    constructor(
-        config: ObjectConfig, 
-        imageService: ImageService, 
-        canvasService: CanvasService
-    ) {
-        super(config, imageService, canvasService);
+    public hasCollision = true;
+    public model: ObjectModel;
 
-        this.hasCollision = true;       
+    constructor(
+        config: ParsedObjectConfig, 
+        canvasService: CanvasService,
+        imageService: ImageService
+    ) {
+        super(config, canvasService);
+
+        this.model = {
+            image: imageService.static[config.model.name],
+            offset: config.model.offset,
+            size: config.model.size
+        };  
     }
 
 }

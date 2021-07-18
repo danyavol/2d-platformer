@@ -1,5 +1,5 @@
 {
-  "name": "2d-platformer",
+  "name": "platformer-2d",
   "version": "0.1.0",
   "description": "",
   "main": "dist/platformer-2d.js",
@@ -12,7 +12,7 @@
   },
   "scripts": {
     "watch": "webpack --watch",
-    "serve": "webpack serve",
+    "serve": "webpack serve --open",
     "build": "webpack --mode production"
   },
   "devDependencies": {
