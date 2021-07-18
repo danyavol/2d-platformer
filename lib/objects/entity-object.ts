@@ -8,9 +8,16 @@ const DEFAULT_CONFIG = {
     maxSpeed: 100,
     sideAcceleration: 0.2,
     gravity: 2000,
-    maxFallSpeed: 2000,
+    maxFallSpeed: 800,
     jumpPower: 800
 };
+
+export interface AnimationConfig {
+    images: HTMLImageElement[],
+    frequent: number,
+    frame?: number,
+    index?: number
+}
 
 export interface EntityConfig {
     maxSpeed: number;           // Max speed (in pixels per second)
@@ -30,15 +37,35 @@ export abstract class EntityObject extends BasicObject {
     private sideButtonPressed = false;
     private jumpButtonPressed = false;
     private inAir = false;
+    protected textures: {
+        time: number,
+        stand: {
+            image: HTMLImageElement,
+        },
+        walk: {
+            images: HTMLImageElement[],
+            frequent: number,
+            index?: number,
+        },
+        jump: {
+            image: HTMLImageElement
+        }
+    };
 
     constructor(
         config: ParsedObjectConfig, 
         canvasService: CanvasService
     ) {
         super(config, canvasService);
+
+        this.textures = {
+            time: 0,
+            stand: { image: null },
+            walk: { images: null, frequent: null },
+            jump: { image: null }
+        };
     }
 
-    // TODO: Don't let player to go out of bounds
     public moveRight(): void {
         this.sideButtonPressed = true;
         this.isModelFlipped = false;
@@ -105,7 +132,6 @@ export abstract class EntityObject extends BasicObject {
     }
 
     private _fall(): void {
-        // if (!this.inAir) return;
         this.inAir = true;
         this.vy = this.applyGravity(this.vy);
         this.coords[1] = this.coords[1] - this.vy/this.fps;
@@ -114,6 +140,30 @@ export abstract class EntityObject extends BasicObject {
     
 
     /****************** Helpers *********************/
+
+    public applyTextures(): void {
+        let img: HTMLImageElement;
+
+        this.textures.time += 1000/this.fps;
+        if (this.textures.time >= 1000) this.textures.time = 0;
+        
+
+        if (this.inAir) {
+            img = this.textures.jump.image;
+        } else if (this.vx != 0) {
+            this.calculateTextureIndex(this.textures.walk);
+            img = this.textures.walk.images[this.textures.walk.index]
+        } else {
+            img = this.textures.stand.image;
+        }
+
+        img ? this.model.image = img : null;
+    }
+
+    private calculateTextureIndex(anim: AnimationConfig): void {
+        const frame = Math.floor(this.textures.time / (1000 / anim.frequent));
+        anim.index = frame - Math.floor(frame/anim.images.length)*anim.images.length;
+    }
 
     private applyGravity(vy: number): number {
         const ySpeed = vy - this.entityConfig.gravity / this.fps;

@@ -61,6 +61,19 @@ export default class CanvasService {
             this.translation.h = transX;
         }
 
+        if (transX != null && transX != this.translation.h) {
+            if (transX < 0) {
+                this.canvas.ctx.translate(0, this.translation.h);
+                this.translation.h = 0;
+            } else if (transX > this.map.width-this.canvas.width) {
+                this.canvas.ctx.translate(0, this.canvas.width - this.map.width + this.translation.h);
+                this.translation.h = this.map.width - this.canvas.width;
+            } else {
+                this.canvas.ctx.translate(0, this.translation.h - transX);
+                this.translation.h = transX;
+            }
+        }
+
         // Vertical translation
         let transY;
         if ( this.translation.v + this.breakpoints.top > y) {
@@ -68,9 +81,17 @@ export default class CanvasService {
         } else if ( this.translation.v + this.canvas.height - this.breakpoints.bottom < y + h) {
             transY = this.translation.v + ( y + h - (this.translation.v + this.canvas.height - this.breakpoints.bottom));
         }
-        if (transY != null && transY >= 0 && transY <= this.map.height-this.canvas.height) {
-            this.canvas.ctx.translate(0, this.translation.v - transY);
-            this.translation.v = transY;
+        if (transY != null && transY != this.translation.v) {
+            if (transY < 0) {
+                this.canvas.ctx.translate(0, this.translation.v);
+                this.translation.v = 0;
+            } else if (transY > this.map.height-this.canvas.height) {
+                this.canvas.ctx.translate(0, this.canvas.height - this.map.height + this.translation.v);
+                this.translation.v = this.map.height - this.canvas.height;
+            } else {
+                this.canvas.ctx.translate(0, this.translation.v - transY);
+                this.translation.v = transY;
+            }
         }
     }
     

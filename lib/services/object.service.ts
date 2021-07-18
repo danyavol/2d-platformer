@@ -37,7 +37,6 @@ export class ObjectService {
 
     public init(config: ParsedGameConfig): void {
         this.clearObjects();
-
         this.player = new Player(config.player, this.canvasService, this.imageService);
         
         for (let obj of config.objects) {
@@ -73,6 +72,7 @@ export class ObjectService {
         this.checkBounds(object);
         this.gridService.updateObjectPosition(object);
         this.checkAllCollisions(object, this.gridService.getNeighbors(object));
+        object.applyTextures();
         object.drawObject();
     }
 

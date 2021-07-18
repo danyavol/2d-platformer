@@ -227,7 +227,7 @@ const DEFAULT_CONFIG = {
     maxSpeed: 100,
     sideAcceleration: 0.2,
     gravity: 2000,
-    maxFallSpeed: 2000,
+    maxFallSpeed: 800,
     jumpPower: 800
 };
 class EntityObject extends _basic_object__WEBPACK_IMPORTED_MODULE_1__.BasicObject {
@@ -239,8 +239,13 @@ class EntityObject extends _basic_object__WEBPACK_IMPORTED_MODULE_1__.BasicObjec
         this.sideButtonPressed = false;
         this.jumpButtonPressed = false;
         this.inAir = false;
+        this.textures = {
+            time: 0,
+            stand: { image: null },
+            walk: { images: null, frequent: null },
+            jump: { image: null }
+        };
     }
-    // TODO: Don't let player to go out of bounds
     moveRight() {
         this.sideButtonPressed = true;
         this.isModelFlipped = false;
@@ -301,12 +306,32 @@ class EntityObject extends _basic_object__WEBPACK_IMPORTED_MODULE_1__.BasicObjec
         this.coords[0] = this.coords[0] + this.vx / this.fps;
     }
     _fall() {
-        // if (!this.inAir) return;
         this.inAir = true;
         this.vy = this.applyGravity(this.vy);
         this.coords[1] = this.coords[1] - this.vy / this.fps;
     }
     /****************** Helpers *********************/
+    applyTextures() {
+        let img;
+        this.textures.time += 1000 / this.fps;
+        if (this.textures.time >= 1000)
+            this.textures.time = 0;
+        if (this.inAir) {
+            img = this.textures.jump.image;
+        }
+        else if (this.vx != 0) {
+            this.calculateTextureIndex(this.textures.walk);
+            img = this.textures.walk.images[this.textures.walk.index];
+        }
+        else {
+            img = this.textures.stand.image;
+        }
+        img ? this.model.image = img : null;
+    }
+    calculateTextureIndex(anim) {
+        const frame = Math.floor(this.textures.time / (1000 / anim.frequent));
+        anim.index = frame - Math.floor(frame / anim.images.length) * anim.images.length;
+    }
     applyGravity(vy) {
         const ySpeed = vy - this.entityConfig.gravity / this.fps;
         if (-ySpeed > this.entityConfig.maxFallSpeed)
@@ -358,11 +383,17 @@ class Player extends _entity_object__WEBPACK_IMPORTED_MODULE_0__.EntityObject {
         this.setEntityConfig({
             maxSpeed: 350
         });
-        this.textures = imageService.players[config.model.name];
-        config.coords[1] = config.coords[1] * 1.4;
+        const textures = imageService.players[config.model.name];
+        this.textures = {
+            time: 0,
+            stand: { image: textures.stand },
+            walk: { images: textures.walk, frequent: 6 },
+            jump: { image: textures.jump }
+        };
+        config.coords[1] = config.coords[1] - config.size[1] * 0.4;
         config.size[1] = config.size[1] * 1.4;
         this.model = {
-            image: this.textures.stand,
+            image: textures.stand,
             offset: config.model.offset,
             size: [config.model.size[0], config.model.size[1] * 1.4]
         };
@@ -497,6 +528,20 @@ class CanvasService {
             this.canvas.ctx.translate(this.translation.h - transX, 0);
             this.translation.h = transX;
         }
+        if (transX != null && transX != this.translation.h) {
+            if (transX < 0) {
+                this.canvas.ctx.translate(0, this.translation.h);
+                this.translation.h = 0;
+            }
+            else if (transX > this.map.width - this.canvas.width) {
+                this.canvas.ctx.translate(0, this.canvas.width - this.map.width + this.translation.h);
+                this.translation.h = this.map.width - this.canvas.width;
+            }
+            else {
+                this.canvas.ctx.translate(0, this.translation.h - transX);
+                this.translation.h = transX;
+            }
+        }
         // Vertical translation
         let transY;
         if (this.translation.v + this.breakpoints.top > y) {
@@ -505,9 +550,19 @@ class CanvasService {
         else if (this.translation.v + this.canvas.height - this.breakpoints.bottom < y + h) {
             transY = this.translation.v + (y + h - (this.translation.v + this.canvas.height - this.breakpoints.bottom));
         }
-        if (transY != null && transY >= 0 && transY <= this.map.height - this.canvas.height) {
-            this.canvas.ctx.translate(0, this.translation.v - transY);
-            this.translation.v = transY;
+        if (transY != null && transY != this.translation.v) {
+            if (transY < 0) {
+                this.canvas.ctx.translate(0, this.translation.v);
+                this.translation.v = 0;
+            }
+            else if (transY > this.map.height - this.canvas.height) {
+                this.canvas.ctx.translate(0, this.canvas.height - this.map.height + this.translation.v);
+                this.translation.v = this.map.height - this.canvas.height;
+            }
+            else {
+                this.canvas.ctx.translate(0, this.translation.v - transY);
+                this.translation.v = transY;
+            }
         }
     }
     clearCanvas() {
@@ -664,6 +719,10 @@ class GameLoopService {
         const frameEnd = performance.now();
         this.fps = Math.floor(1000 / (frameEnd - this.frameStart));
         this.frameStart = performance.now();
+        if (this.fps < 25)
+            this.fps = 25;
+        if (this.fps > 1000)
+            this.fps = 1000;
         this.frame();
         if (!this.isGamePaused)
             setTimeout(() => this.step(), 0);
@@ -892,6 +951,7 @@ class ObjectService {
         this.checkBounds(object);
         this.gridService.updateObjectPosition(object);
         this.checkAllCollisions(object, this.gridService.getNeighbors(object));
+        object.applyTextures();
         object.drawObject();
     }
     clearObjects() {
@@ -999,15 +1059,31 @@ const GAME_CONFIG = {
         bottom: '1:4',
         left: '1:4',
     },
-    player: { coords: [1, 3], type: 'player', model: 'alien2', },
+    player: { coords: [1, 7], type: 'player', model: 'alien2', },
     objects: [
-        { coords: [0, 5], type: 'wall', model: 'grassMid' },
-        { coords: [1, 5], type: 'wall', model: 'grassMid' },
-        { coords: [2, 5], type: 'wall', model: 'grassMid' },
-        { coords: [3, 6], type: 'wall', model: 'grassMid' },
-        { coords: [3, 7], type: 'wall', model: 'grassCenter' },
+        { coords: [0, 8], type: 'wall', model: 'grassMid' },
+        { coords: [1, 8], type: 'wall', model: 'grassMid' },
+        { coords: [2, 8], type: 'wall', model: 'grassMid' },
+        { coords: [3, 8], type: 'wall', model: 'grassMid' },
         { coords: [4, 8], type: 'wall', model: 'grassMid' },
-        { coords: [5, 9], type: 'wall', model: 'grassMid' },
+        { coords: [5, 8], type: 'wall', model: 'grassMid' },
+        { coords: [6, 8], type: 'wall', model: 'grassMid' },
+        { coords: [7, 8], type: 'wall', model: 'grassMid' },
+        { coords: [0, 9], type: 'wall', model: 'grassCenter' },
+        { coords: [1, 9], type: 'wall', model: 'grassCenter' },
+        { coords: [2, 9], type: 'wall', model: 'grassCenter' },
+        { coords: [3, 9], type: 'wall', model: 'grassCenter' },
+        { coords: [4, 9], type: 'wall', model: 'grassCenter' },
+        { coords: [5, 9], type: 'wall', model: 'grassCenter' },
+        { coords: [6, 9], type: 'wall', model: 'grassCenter' },
+        { coords: [7, 9], type: 'wall', model: 'grassCenter' },
+        { coords: [8, 9], type: 'wall', model: 'grassCenter' },
+        { coords: [8, 8], type: 'wall', model: 'grassCenter' },
+        { coords: [8, 7], type: 'wall', model: 'grassCenter' },
+        { coords: [8, 6], type: 'wall', model: 'grassMid' },
+        { coords: [9, 7], type: 'wall', model: 'grassMid' },
+        { coords: [10, 7], type: 'wall', model: 'grassMid' },
+        { coords: [12, 9], type: 'wall', model: 'grassMid' },
     ]
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GAME_CONFIG);

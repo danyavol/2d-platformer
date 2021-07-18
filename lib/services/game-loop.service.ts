@@ -33,6 +33,8 @@ export class GameLoopService {
         const frameEnd = performance.now();
         this.fps = Math.floor( 1000 / (frameEnd - this.frameStart) );
         this.frameStart = performance.now();
+        if (this.fps < 25) this.fps = 25;
+        if (this.fps > 1000) this.fps = 1000;
 
         this.frame();
         

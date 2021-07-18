@@ -31,6 +31,8 @@ export default class Platformer2D {
         );
 
         this.imageService.isLoaded.then(() => this.init());
+
+        
     }
 
     private init(): void {
