@@ -73,6 +73,11 @@ export class ObjectService {
         this.gridService.updateObjectPosition(object);
         this.checkAllCollisions(object, this.gridService.getNeighbors(object));
         object.applyTextures();
+
+        // Round coords after all calculations to prevent visual collision
+        object.coords[0] = Math.round(object.coords[0]);
+        object.coords[1] = Math.round(object.coords[1]);
+
         object.drawObject();
     }
 

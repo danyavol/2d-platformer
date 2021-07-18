@@ -1,7 +1,6 @@
 import { abs } from "../helpers/common-methods";
 import { ParsedObjectConfig } from "../interfaces/parsed-game-config.interface";
 import CanvasService from "../services/canvas.service";
-import { ImageService } from "../services/image.service";
 import { BasicObject } from "./basic-object";
 
 const DEFAULT_CONFIG = {

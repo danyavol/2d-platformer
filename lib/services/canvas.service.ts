@@ -1,6 +1,3 @@
-// icons https://www.studio-maximus.com/works/apps/birds-to-space/
-
-import { CameraBreakPoint, CameraConfig, CameraDirection, } from "../interfaces/game-config.interface";
 import { ParsedCameraConfig, ParsedGameConfig } from "../interfaces/parsed-game-config.interface";
 import { ImageService } from "./image.service";
 
@@ -48,6 +45,7 @@ export default class CanvasService {
 
 
     public updateCameraTranslation(x: number, y: number, w: number, h: number): void {
+        // P.S. Don't try to understand this method :# This is hell
 
         // Horizontal translation
         let transX;
