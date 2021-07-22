@@ -14,6 +14,9 @@ export class Player extends EntityObject {
     private isRightPressed = false;
     private isJumpPressed = false;
 
+    private heightRate = 1.2;
+    private widthRate = 0.8;
+
     constructor(
         config: ParsedObjectConfig, 
         canvasService: CanvasService,
@@ -33,13 +36,13 @@ export class Player extends EntityObject {
             jump: {image: textures.jump}
         };
 
-        config.coords[1] = config.coords[1]-config.size[1]*0.4;
-        config.size[1] = config.size[1]*1.4;
+        this.coords[1] = this.coords[1]-this.size[1]*(this.heightRate-1);
+        this.size = [this.size[0]*this.widthRate, this.size[1]*this.heightRate];
 
         this.model = {
             image: textures.stand,
             offset: config.model.offset,
-            size: [config.model.size[0], config.model.size[1]*1.4]
+            size: [this.size[0], this.size[1]]
         };
         
         this.initEventListeners();

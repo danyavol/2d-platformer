@@ -1,4 +1,3 @@
-import { ObjectConfig } from "../../interfaces/game-config.interface";
 import { ParsedObjectConfig } from "../../interfaces/parsed-game-config.interface";
 import CanvasService from "../../services/canvas.service";
 import { ImageService } from "../../services/image.service";

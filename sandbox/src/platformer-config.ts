@@ -16,7 +16,7 @@ const GAME_CONFIG: GameConfig = {
         bottom: '1:4',
         left: '1:4',
     },
-    player: { coords: [1, 7], type: 'player', model: 'alien2', },
+    player: { coords: [2, 7], type: 'player', model: 'alien2', },
     objects: [
         { coords: [0, 8], type: 'wall', model: 'grassMid' },
         { coords: [1, 8], type: 'wall', model: 'grassMid' },
@@ -41,6 +41,15 @@ const GAME_CONFIG: GameConfig = {
         { coords: [9, 7], type: 'wall', model: 'grassMid' },
         { coords: [10, 7], type: 'wall', model: 'grassMid' },
         { coords: [12, 9], type: 'wall', model: 'grassMid' },
+        // Decorations
+        { coords: [1, 7], type: 'decoration', model: 'bush' },
+        { coords: [3, 7], type: 'decoration', model: 'fence' },
+        { coords: [4, 7], type: 'decoration', model: 'fence_broken' },
+        { coords: [5, 7], type: 'decoration', model: 'fence' },
+        { coords: [6, 7], type: 'decoration', model: 'rock' },
+        { coords: [7, 7], type: 'decoration', model: 'herb' },
+        { coords: [9, 6], type: 'decoration', model: 'mushroomBrown' },
+        { coords: [10, 6], type: 'decoration', model: 'mushroomRed' },
     ] 
 }
 export default GAME_CONFIG;

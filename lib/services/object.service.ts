@@ -3,18 +3,19 @@ import { ObjectConfig } from "../interfaces/game-config.interface";
 import { ParsedGameConfig, ParsedObjectConfig } from "../interfaces/parsed-game-config.interface";
 import { BasicObject } from "../objects/basic-object";
 import { EntityObject } from "../objects/entity-object";
-import { Player } from "../objects/player/player.object";
-import { Wall } from "../objects/wall/wall.object";
+import { Decoration } from "../objects/types/decoration.object";
+import { Player } from "../objects/types/player.object";
+import { Wall } from "../objects/types/wall.object";
 import CanvasService from "./canvas.service";
 import { GridService } from "./grid.service";
 import { ImageService } from "./image.service";
 
-export type ObjectTypes = 'wall' | 'player';
+export type ObjectTypes = 'player' | 'wall' | 'decoration';
 
 export class ObjectService {
 
-    private staticObjects: Wall[] = [];
-    private dynamicObjects: Player[] = [];
+    private background_objects: Decoration[] = [];
+    private static_objects: Wall[] = [];
     private player: Player;
     
     private gridService: GridService;
@@ -42,29 +43,31 @@ export class ObjectService {
         for (let obj of config.objects) {
             switch(obj.type) {
                 case 'wall':
-                    this.staticObjects.push(
+                    this.static_objects.push(
                         new Wall(obj, this.canvasService, this.imageService)
                     );
-                    break
+                    break;
+                case 'decoration':
+                    this.background_objects.push(
+                        new Decoration(obj, this.canvasService, this.imageService)
+                    );
+                    break;
             }
         }
 
-        this.staticObjects.forEach( o => this.gridService.addObjectToGrid(o) );
+        this.static_objects.forEach( o => this.gridService.addObjectToGrid(o) );
     }
 
     public renderObjects(fps: number): void {
+        /* Background objects render */
+        this.background_objects.forEach(o => o.drawObject());
+
         /* Static objects render */
-        this.staticObjects.forEach(o => o.drawObject());
+        this.static_objects.forEach(o => o.drawObject());
 
         /* Player render */
         this.renderDynamicObject(this.player, fps);
         this.canvasService.updateCameraTranslation(...this.player.coords, ...this.player.size);
-
-
-        /* Dynamic objects render */
-        this.dynamicObjects.forEach(o => {
-            this.renderDynamicObject(o, fps);
-        });
     }
 
     private renderDynamicObject(object: EntityObject, fps: number): void {
@@ -82,12 +85,12 @@ export class ObjectService {
     }
 
     private clearObjects(): void {
-        this.staticObjects = [];
-        this.dynamicObjects = [];
+        this.background_objects = [];
+        this.static_objects = [];
     }
     
     get allObjects() {
-        return [ ...this.staticObjects, ...this.dynamicObjects ];
+        return [ ...this.static_objects ];
     }
 
     private checkBounds(obj: EntityObject): void {
@@ -122,6 +125,8 @@ export class ObjectService {
     private checkCollision(o1: EntityObject, o2: BasicObject): boolean {
         // if o1 overlaps with o2, then o1 will be moved out from o2
         // P.S. This function is hell for debugging :)
+        if (o2.hasCollision === false) return;
+
         let [o1_x1, o1_y1] = o1.coords;
         const [o1_x2, o1_y2] = [ o1.coords[0]+o1.size[0], o1.coords[1]+o1.size[1] ];
 
