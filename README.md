@@ -1,7 +1,9 @@
 # 2D game on vanilla TypeScript
 
 
-Not finished yet, but below you can see what I already have..
+This game doesn't use any third-party game engines.
+
+I'v made my own game engine with support of textures, animations and map generation based on config. Wish I will finish it someday..
 
 ![](https://i.imgur.com/KzVehnL.gif)
 
